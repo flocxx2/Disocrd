@@ -1201,7 +1201,7 @@ message.channel.sendFile(canvas.toBuffer())
                           
                           client.on('message', message => { 
                                         var prefix ="#";
-                                               if (message.content.startsWith(prefix + "user")) {
+                                               if (message.content.startsWith(prefix + "id")) {
                                          var args = message.content.split(" ").slice(1);
                                          let user = message.mentions.users.first();
                                          var men = message.mentions.users.first();
@@ -1292,7 +1292,7 @@ client.on("message", async function(msg) {
 
 client.on("message", message => {
 
-    if (message.content.startsWith(".bbc")) {
+    if (message.content.startsWith("#bbc")) {
                  if (!message.member.hasPermission("ADMINISTRATOR"))  return;
   let args = message.content.split(" ").slice(1);
   var argresult = args.join(' ');
@@ -1308,7 +1308,7 @@ client.on("message", message => {
  
  client.on("message", message => {
 
-    if (message.content.startsWith(".bc")) {
+    if (message.content.startsWith("#bc")) {
                  if (!message.member.hasPermission("ADMINISTRATOR"))  return;
   let args = message.content.split(" ").slice(1);
   var argresult = args.join(' ');
@@ -1327,7 +1327,7 @@ function forEachObject(obj, func) {
 client.on("ready", () => {
     var guild;
     while (!guild)
-        guild = client.guilds.get("534332066133704724")
+        guild = client.guilds.get("536309866864705547")
     guild.fetchInvites().then((data) => {
         data.forEach((Invite, key, map) => {
             var Inv = Invite.code;
@@ -1336,7 +1336,7 @@ client.on("ready", () => {
     })
 })
 client.on("guildMemberAdd", (member) => {
-    let channel = member.guild.channels.find('name', "florida");
+    let channel = member.guild.channels.find('name', "discord");
     if (!channel) {
         console.log("!channel fails");
         return;
@@ -1347,7 +1347,7 @@ client.on("guildMemberAdd", (member) => {
     console.log('made it till here!');
     var guild;
     while (!guild)
-        guild = client.guilds.get("534332066133704724")
+        guild = client.guilds.get("536309866864705547")
     guild.fetchInvites().then((data) => {
         data.forEach((Invite, key, map) => {
             var Inv = Invite.code;
