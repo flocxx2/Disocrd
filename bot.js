@@ -123,13 +123,7 @@ client.on('ready', () => {
                           
 
                                     
-                                    client.on('message', message => {
-                                        if (message.content.startsWith(".bans")) {
-                                            message.guild.fetchBans()
-                                            .then(bans => message.channel.send(`${bans.size} عدد اشخاص المبندة من السيرفر `))
-                                      .catch(console.error);
-                                    }
-                                    });
+                                   
                                     
  
 
@@ -228,92 +222,9 @@ client.on('guildMemberAdd', member => {
   
 });
 
-const ms = require("ms");
-  client.on("message", message => {
- if(!message.channel.guild) return;  
-  if (message.author.bot) return;
- 
-  let command = message.content.split(" ")[0];
- 
-  if (message.content.split(" ")[0].toLowerCase() === prefix + "unmute") {
-        if (!message.member.hasPermission('MANAGE_ROLES')) return;
-  let user = message.mentions.users.first();
-  let modlog = client.channels.find('name', 'log');
-  let muteRole = client.guilds.get(message.guild.id).roles.find('name', 'Muted');
-  if (!muteRole) return message.reply(" I Can’t Find 'Muted' Role ").catch(console.error).then(message => message.delete(4000))
-  if (message.mentions.users.size < 1) return message.reply(' Error : ``Mention a User``').catch(console.error).then(message => message.delete(4000))
-  if (!message.guild.member(client.user).hasPermission('MANAGE_ROLES_OR_PERMISSIONS')) return;
- 
-  if (message.guild.member(user).removeRole(muteRole.id)) {
-      return message.reply("User Has Been UnMuted.").catch(console.error).then(message => message.delete(4000))
-  } else {
-    message.guild.member(user).removeRole(muteRole).then(() => {
-      return message.reply("User Has Been UnMuted.").catch(console.error).then(message => message.delete(4000))
-    });
-  }
- 
-};
- 
-});
- 
- 
-client.on('message',function(message) {
- if(!message.channel.guild) return;    let messageArray = message.content.split(' ');
-    let muteRole =  message.guild.roles.find('name', 'Muted');
-    let muteMember = message.mentions.members.first();
-    let muteReason = messageArray[2];
-    let muteDuration = messageArray[3];
- if (message.content.split(" ")[0].toLowerCase() === prefix + "mute") {
-           
-  if (message.author.bot) return;
-       if(!muteRole) return message.guild.createRole({name: 'Muted'}).then(message.guild.channels.forEach(chan => chan.overwritePermissions(muteRole, {SEND_MESSAGES:false,ADD_REACTIONS:false})));
-       if(!message.guild.member(message.author).hasPermission("MANAGE_ROLES")) return message.channel.send(' Error : You Need `` MANAGE_ROLES ``Permission ');
-       if(!message.guild.member(client.user).hasPermission("MANAGE_ROLES")) return message.channel.send(' Error : I Don’t Have `` MANAGE_ROLES ``Permission ');
-       if(!muteMember) return message.channel.send(' Error : ``Mention a User``').then(message => message.delete(4000))
-       if(!muteReason) return message.channel.send(' Error : ``Supply a Reason``').then(message => message.delete(4000))
-       if(!muteDuration) return message.channel.send(' Error : `` Supply Mute Time `` \n Ex: #mute @user reason 1m ').then(message => message.delete(4000))
-       if(!muteDuration.match(/[1-7][s,m,h,d,w]/g)) return message.channel.send(' Error : `` Invalid Mute Duration``').then(message => message.delete(4000))
-       message.channel.send(`${muteMember} Has Been Muted.`).then(message => message.delete(5000))
-       muteMember.addRole(muteRole);
-       muteMember.setMute(true)
-       .then(() => { setTimeout(() => {
-           muteMember.removeRole(muteRole)
-           muteMember.setMute(false)
-       }, mmss(muteDuration));
-       });
-   }
-});
 
 
 
-client.on('message', message => {//new msg event
-if(!message.channel.guild) return;
-  if(message.content.startsWith(prefix + 'rainbow')) {//to create the rainbow role
-	  let role = message.guild.roles.find('name', 'RB')
-    if(role) return message.channel.send(`This Step Already Completed !`)//if the role already created return with this msg
-  //start of create role 
-  if(!role){
-    rainbow =  message.guild.createRole({
-   name: "RB",//the role will create name
-   color: "#000000",//the default color
-   permissions:[]//the permissions
- //end of create role
-})
-
-}
-message.channel.send('Done The Rainbow Role Setup Has Been Completed')//if the step completed
-}})
-
-client.on('ready', () => {//new ready event
-  setInterval(function(){
-      client.guilds.forEach(g => {
-                  var role = g.roles.find('name', 'RB');//rainbow role name
-                  if (role) {
-                      role.edit({color : "RANDOM"});
-                  };
-      });
-  }, 5000);//the rainbow time
-})
 
 client.on('message',async message => {
 
@@ -953,7 +864,7 @@ client.on('voiceStateUpdate', (voiceOld, voiceNew) => {
 });
 
 client.on('message', message => {
-  var prefix = "#";
+  var prefix = ".";
   if (message.author.omar) return;
   if (!message.content.startsWith(prefix)) return;
   var command = message.content.split(" ")[0];
@@ -1129,4 +1040,120 @@ client.on("message", message => {
                   }
     })
     
+client.on('message', message => {
+var prefix = "." // برفكس حقك هني
+           if (message.content.startsWith(prefix + "id")) {
+     var args = message.content.split(" ").slice(1);
+     let user = message.mentions.users.first();
+     var men = message.mentions.users.first();
+        var heg;
+        if(men) {
+            heg = men
+        } else {
+            heg = message.author
+        }
+      var mentionned = message.mentions.members.first();
+         var h;
+        if(mentionned) {
+            h = mentionned
+        } else {
+            h = message.member
+        }
+               moment.locale('ar-TN');
+      var id = new  Discord.RichEmbed()
+      .setAuthor(message.author.username, message.author.avatarURL)
+    .setColor("#707070")
+    .addField(': دخولك لديسكورد قبل', `${moment(heg.createdTimestamp).format('YYYY/M/D HH:mm:ss')} **\n** \`${moment(heg.createdTimestamp).fromNow()}\`` ,true)
+    .addField(': انضمامك لسيرفر قبل', `${moment(h.joinedAt).format('YYYY/M/D HH:mm:ss')} \n \`${moment(h.joinedAt).fromNow()}\``, true)              
+    .setFooter(`${client.username}`, 'https://images-ext-2.discordapp.net/external/JpyzxW2wMRG2874gSTdNTpC_q9AHl8x8V4SMmtRtlVk/https/orcid.org/sites/default/files/files/ID_symbol_B-W_128x128.gif')                                
+    .setThumbnail(heg.avatarURL);
+    message.channel.send(id)
+}       });
+
+client.on('message', message => {
+var prefix = "." // البريفكس
+if(message.content.startsWith(prefix +"server")){ // الامر
+  if(!message.guild.member(message.author).hasPermission("ADMINISTRATOR")) return message.reply(`**هذه الخاصية للادارة فقط** ❎ `)
+if(!message.channel.guild) return message.reply(' ');
+const millis = new Date().getTime() - message.guild.createdAt.getTime();
+const now = new Date();
+dateFormat(now, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
+const verificationLevels = ['None', 'Low', 'Medium', 'Insane', 'Extreme'];
+const days = millis / 1000 / 60 / 60 / 24;
+let roles = client.guilds.get(message.guild.id).roles.map(r => r.name);
+var embed  = new Discord.RichEmbed()
+.setAuthor(message.guild.name, message.guild.iconURL)
+.addField("**🆔 Server ID:**", message.guild.id,true)
+.addField("**📅 Created On**", message.guild.createdAt.toLocaleString(),true)
+.addField("**👑 Owned by**",`${message.guild.owner.user.username}#${message.guild.owner.user.discriminator}`)
+.addField("**👥 Members**",`[${message.guild.memberCount}]`,true)
+.addField('**💬 Channels **',`**${message.guild.channels.filter(m => m.type === 'text').size}**` + ' text | Voice  '+ `**${message.guild.channels.filter(m => m.type === 'voice').size}** `,true)
+.addField("**🌍 Others **" , message.guild.region,true)
+.addField("**🔐 Roles **",`**[${message.guild.roles.size}]** Role `,true)
+.setColor('#000000')
+message.channel.sendEmbed(embed)
+
+}
+}); 
+
+client.on("message", message => {
+    if(message.content.startsWith(prefix + 'help')) {
+        message.delete(5000)
+        if(!message.channel.send) return;
+        const e = new Discord.RichEmbed()
+        .setColor('#36393e')
+        .setDescription(`**Check Your DM | :white_check_mark:**`)
+     const embed = new Discord.RichEmbed()
+         .setColor('#36393e')
+         .setThumbnail(message.author.avatarURL)
+         .setFooter('Reqused By : ' + message.author.username, message.author.avatarURL)
+	 .setTimestamp()
+         .setDescription(`**• Puplic - عام •
+.avatar ( صوره الشخصيه )
+.help ( عرض قائمه المساعده )
+.count ( لعرض عدد الاعضاء )
+.id ( عرض معلومات الشخصيه )
+.fm ( لعرض حالت الاعضاء )
+.ping ( لعرض سرعه النت تبعك )
+.avatar ( لعرض صوره حسابك )
+
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+• Staff - الاداره •
+.ban ( حظر الشخصيه )
+.kick ( طرد الشخصيه )
+.mute ( اسكات الشخصيه )
+.unmute ( فك الاسكات من الشخصيه )
+.clear ( مسح رسائل المخادثه )
+.server ( عرض معلومات السيرفر )
+.move ( سحب العضو لرومك الصوتي )
+.setcount ( لصنع روم عدد الاعضاء )
+.setvoice ( لصنع روم عدد الاعضاء الي في الرومات )
+.bc ( لارسال بردكاست بمنشن )
+.bbc ( لارسال بردكاست بدون منشن )
+.mc ( لقفل روم كتابه )
+.umc ( لفتح روم كتابه )
+
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+Devloped By <@470696696293228545>
+*`)
+   message.channel.send(e).then(m => m.delete(5000))
+   message.author.sendEmbed(embed)
+   
+   }
+   });
+
+client.on('message', message => {
+  if(message.content.startsWith(prefix + "ping")) {
+message.channel.send(`MessageTaken: \`${Date.now() - message.createdTimestamp}\`ms\n DiscordAPi: \`${Math.round(client.ping)}\`ms\nAverage: \`${Math.round(client.pings[0])}\`ms. `)
+}
+});
+
+ client.on('message', message => {
+        var  user = message.mentions.users.first() || message.author;
+    if (message.content.startsWith(".avatar")) {
+message.channel.send(`This avatar For ${user} link : ${user.avatarURL}`);
+}
+});
         client.login(process.env.BOT_TOKEN);
