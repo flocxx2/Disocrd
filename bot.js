@@ -254,7 +254,7 @@ client.on("guildMemberAdd", (member) => {
             if (dat[Inv])
                 if (dat[Inv] < Invite.uses) {
                     console.log(3);
- channel.send(`**ولكم الاتحاد العربي يرحب بكم** :gem: \n استمتع 🎶 \n ${member} تم الدخول بواسطه ${Invite.inviter}`)
+ channel.send(`**تم الدخول بواسطه ${Invite.inviter}**`)
  }
             dat[Inv] = Invite.uses;
         })
