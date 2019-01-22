@@ -115,48 +115,6 @@ client.on('ready', () => {
 
     
     
- client.on('message', async message => {
-                if(message.content.includes('discord.gg')){ 
-                    if(message.member.hasPermission("MANAGE_GUILD")) return;
-            if(!message.channel.guild) return;
-            message.delete()
-              var command = message.content.split(" ")[0];
-        let muterole = message.guild.roles.find(`name`, "Muted");
-        if(!muterole){
-          try{
-            muterole = await message.guild.createRole({
-              name: "Muted",
-              color: "#9c9c9c",
-              permissions:[]
-            })
-            message.guild.channels.forEach(async (channel, id) => {
-              await channel.overwritePermissions(muterole, {
-                SEND_MESSAGES: false,
-                ADD_REACTIONS: false
-              });
-            });
-          }catch(e){
-            console.log(e.stack);
-          }
-        }
-               if(!message.channel.guild) return message.reply('** This command only for servers**');
-         message.member.addRole(muterole);
-        const embed500 = new Discord.RichEmbed()
-          .setTitle("ميوت بسبب نشر")
-                .addField(`**لقد تم إعطائك ميوت كتابي **` , `**السبب: نشر رابط سيرفر في الديسكورد**`)
-                .setColor("c91616")
-                .setThumbnail(`${message.author.avatarURL}`)
-                .setAuthor(message.author.username, message.author.avatarURL)
-            .setFooter(`${message.guild.name} `)
-         message.channel.send(embed500)
-         message.author.send('**لو كان الميوت عن طريق الخطاء كلم الاداره**');
-    
-                  
-                  
-                  
-                  }
-    })
-    
 
       client.on('message',function(message) {
         if (message.author.bot) return;
@@ -303,93 +261,7 @@ client.on("guildMemberAdd", (member) => {
     })
 });
 
-client.on("message", (message) => {
-    /// ALPHA CODES
-   if (message.content.startsWith(".new")) {     /// ALPHA CODES
-        const reason = message.content.split(" ").slice(1).join(" ");     /// ALPHA CODES
-        if (!message.guild.roles.exists("name", "Support Team")) return message.channel.send(`لازم تسوي رتبه اسمه Support Team`);
-        if (message.guild.channels.exists("name", "ticket-{message.author.id}" + message.author.id)) return message.channel.send(`You already have a ticket open.`);    /// ALPHA CODES
-        message.guild.createChannel(`ticket-${message.author.username}`, "text").then(c => {
-            let role = message.guild.roles.find("name", "Support Team");
-            let role2 = message.guild.roles.find("name", "@everyone");
-            c.overwritePermissions(role, {
-                SEND_MESSAGES: true,
-                READ_MESSAGES: true
-            });    /// ALPHA CODES
-            c.overwritePermissions(role2, {
-                SEND_MESSAGES: false,
-                READ_MESSAGES: false
-            });
-            c.overwritePermissions(message.author, {
-                SEND_MESSAGES: true,
-                READ_MESSAGES: true
-            });
-            message.channel.send(`:white_check_mark: **تم إنشاء تذكرتك ، #${c.name}.**`);
-            const embed = new Discord.RichEmbed()
-                .setColor(0xCF40FA)
-                .addField(`مرحباّ ${message.author.username}!`, `يرجى محاولة شرح سبب فتح هذه التذكرة بأكبر قدر ممكن من التفاصيل. سيكون فريق الدعم لدينا قريبا للمساعدة.`)
-                .setTimestamp();
-            c.send({
-                embed: embed
-            });
-        }).catch(console.error);
-    }
- 
- 
-  if (message.content.startsWith("-close")) {
-        if (!message.channel.name.startsWith(`ticket-`)) return message.channel.send(`You can't use the close command outside of a ticket channel.`);
- 
-        message.channel.send(`هل أنت متأكد؟ بعد التأكيد ، لا يمكنك عكس هذا الإجراء!\n للتأكيد ، اكتب\`.confirm\`. سيؤدي ذلك إلى مهلة زمنية في غضون 10 ثوانٍ وإلغائها`)
-            .then((m) => {
-                message.channel.awaitMessages(response => response.content === '.confirm', {
-                        max: 1,
-                        time: 10000,
-                        errors: ['time'],
-                    })    
-                    .then((collected) => {
-                        message.channel.delete();
-                    })   
-                    .catch(() => {
-                        m.edit('Ticket close timed out, the ticket was not closed.').then(m2 => {
-                            m2.delete();
-                        }, 3000);
-                    });
-            });
-    }
- 
-});
-  
-  client.on('message', message => {
-      if (message.content.startsWith(prefix + 'about')) {
-      if (message.author.bot) return
-      if (!message.guild) return message.reply('**:x: This Command Only In Server**')
-      let embed = new Discord.RichEmbed()
-      .setColor('RANDOM')
-      .setTitle(':mailbox_with_mail: about')
-      .setDescription(`I am ${client.user.username}, and I will try my best to help everyone! If I am in a discord server, people can use me to create tickets in order`)
-      .setFooter(`${client.user.username}`)
-      message.author.sendEmbed(embed)
-      }
-  });
 
-  client.on('message', message => {
-    if (message.content.startsWith("رابط")) {
-
-  message.channel.createInvite({
-        thing: true,
-        maxUses: 100,
-        maxAge: 86400
-    }).then(invite =>
-      message.author.sendMessage(invite.url)
-    )
-  message.channel.send("**:link:.تم ارسال الرابط برسالة خاصة**")
-
-message.author.send(`**مدة الرابط : يـوم
-عدد استخدامات الرابط : 100**`)
-
-
-    }
-});
 
 client.on('guildMemberAdd', member => {
      const welcomer =  member.guild.channels.find('name', 'discord');
@@ -505,79 +377,9 @@ client.on('message', message => {
 }
 });
 
-client.on('message', message => {
-     var prefix = "."
-if (message.content.startsWith(prefix + "uptime")) {
-    let uptime = client.uptime;
- 
-    let days = 0;
-    let hours = 0;
-    let minutes = 0;
-    let seconds = 0;
-    let notCompleted = true;
- 
-    while (notCompleted) {
- 
-        if (uptime >= 8.64e+7) {
- 
-            days++;
-            uptime -= 8.64e+7;
- 
-        } else if (uptime >= 3.6e+6) {
- 
-            hours++;
-            uptime -= 3.6e+6;
- 
-        } else if (uptime >= 60000) {
- 
-            minutes++;
-            uptime -= 60000;
- 
-        } else if (uptime >= 1000) {
-            seconds++;
-            uptime -= 1000;
- 
-        }
- 
-        if (uptime < 1000)  notCompleted = false;
- 
-    }
- 
-    message.channel.send("**" + `${days} days, ${hours} hrs, ${minutes} min , ${seconds} sec` + "**");
- 
- 
-}
-});
 
-client.on('message' , message => {
-  if (message.author.dark) return;
-  if (!message.content.startsWith(prefix)) return;
 
-  let command = message.content.split(" ")[0];
-  command = command.slice(prefix.length);
-
-  let args = message.content.split(" ").slice(1);
-
-  if (command == "ban") {
-               if(!message.channel.guild) return message.reply('** This command only for servers**');
-         
-  if(!message.guild.member(message.author).hasPermission("BAN_MEMBERS")) return message.reply("**You Don't Have ` BAN_MEMBERS ` Permission**");
-  if(!message.guild.member(client.user).hasPermission("BAN_MEMBERS")) return message.reply("**I Don't Have ` BAN_MEMBERS ` Permission**");
-  let user = message.mentions.users.first();
-  let reason = message.content.split(" ").slice(2).join(" ");
-      /*let banlog = client.channels.find("name", "ban-log");
-  if(!banlog) return message.reply("I've detected that this server doesn't have a ban-log text channel.");*/
-  if (message.mentions.users.size < 1) return message.reply("**منشن شخص**");
-  if(!reason) return message.reply ("**اكتب سبب الباند**");
-  if (!message.guild.member(user)
-  .bannable) return message.reply("**لايمكنني ابند شخص اعلى من رتبتي يرجه اعطاء البوت رتبه عالي**");
-
-  message.guild.member(user).ban(7, user);
-  message.channel.sendMessage("**لقد تم اعطاء الباند الي شخص بنجاح** ✅");
-}
-});
-
-                                    client.on('message', message => {//new msg event
+client.on('message', message => {//new msg event
 if(!message.channel.guild) return;
   if(message.content.startsWith(prefix + 'rainbow')) {//to create the rainbow role
 	  let role = message.guild.roles.find('name', 'RB')
@@ -585,7 +387,7 @@ if(!message.channel.guild) return;
   //start of create role 
   if(!role){
     rainbow =  message.guild.createRole({
-   name: "Rainbow",//the role will create name
+   name: "RB",//the role will create name
    color: "#000000",//the default color
    permissions:[]//the permissions
  //end of create role
@@ -598,7 +400,7 @@ message.channel.send('Done The Rainbow Role Setup Has Been Completed')//if the s
 client.on('ready', () => {//new ready event
   setInterval(function(){
       client.guilds.forEach(g => {
-                  var role = g.roles.find('name', 'Rainbow');//rainbow role name
+                  var role = g.roles.find('name', 'RB');//rainbow role name
                   if (role) {
                       role.edit({color : "RANDOM"});
                   };
@@ -641,6 +443,45 @@ client.on('message',async message => {
     },1000);
   });
   }
+});
+
+  client.on('message', message => {
+	var prefix = "."
+  if (message.author.x5bz) return;
+  if (!message.content.startsWith(prefix)) return;
+
+  let command = message.content.split(" ")[0];
+  command = command.slice(prefix.length);
+
+  let args = message.content.split(" ").slice(1);
+
+  if (command == "ban") {
+               if(!message.channel.guild) return message.reply('** This command only for servers**');
+         
+  if(!message.guild.member(message.author).hasPermission("BAN_MEMBERS")) return message.reply("**You Don't Have ` BAN_MEMBERS ` Permission**");
+  if(!message.guild.member(client.user).hasPermission("BAN_MEMBERS")) return message.reply("**I Don't Have ` BAN_MEMBERS ` Permission**");
+  let user = message.mentions.users.first();
+  let reason = message.content.split(" ").slice(2).join(" ");
+  /*let b5bzlog = client.channels.find("name", "5bz-log");
+  if(!b5bzlog) return message.reply("I've detected that this server doesn't have a 5bz-log text channel.");*/
+  if (message.mentions.users.size < 1) return message.reply("**منشن شخص**");
+  if(!reason) return message.reply ("**اكتب سبب الطرد**");
+  if (!message.guild.member(user)
+  .bannable) return message.reply("**لايمكنني طرد شخص اعلى من رتبتي يرجه اعطاء البوت رتبه عالي**");
+
+  message.guild.member(user).ban(7, user);
+
+  const banembed = new Discord.RichEmbed()
+  .setAuthor(`BANNED!`, user.displayAvatarURL)
+  .setColor("RANDOM")
+  .setTimestamp()
+  .addField("**User:**",  '**[ ' + `${user.tag}` + ' ]**')
+  .addField("**By:**", '**[ ' + `${message.author.tag}` + ' ]**')
+  .addField("**Reason:**", '**[ ' + `${reason}` + ' ]**')
+  message.channel.send({
+    embed : banembed
+  })
+}
 });
 
         client.login(process.env.BOT_TOKEN);
