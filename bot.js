@@ -1136,8 +1136,8 @@ client.on("message", message => {
 
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
-Devloped By <@470696696293228545>
-*`)
+Devloped By <@467777208732352512>
+**`)
    message.channel.send(e).then(m => m.delete(5000))
    message.author.sendEmbed(embed)
    
