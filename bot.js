@@ -1137,6 +1137,8 @@ client.on("message", message => {
 .umc ( لفتح روم كتابه )
 .autorole ( لتفعيل الاوتو رول )
 .role ( لاعطاء رتبه )
+.clear ( لمسح لشات )
+.clear <num> ( لمسح الشات بعدد )
 
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
@@ -1161,57 +1163,55 @@ message.channel.send(`This avatar For ${user} link : ${user.avatarURL}`);
 }
 });
 
-var temp = {
+var word;
  
-}
- 
-client.on("message",(message) => {
-    if (message.channel.type !== "text") return;
-    if (!message.content.startsWith(prefix)) return;
-        if(message.content.startsWith(prefix + "temp on")) {
-            if (!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("** You Don't Have Permission `Manage channels` To Do This Command");
-            temp[message.guild.id] = {
-                work : true,
-                channel : "Not Yet"
-            };
-            message.guild.createChannel("اضغط لصنع روم مؤقت", 'voice').then(c => {
-                c.setPosition(1);
-                temp[message.guild.id].channel = c.id
-                message.channel.send("** Done.**");
-            });
-        if(message.content.startsWith(prefix + "temp off")) {
-            if (!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("** You Don't Have Permission `Manage channels` To Do This Command");
-        message.guild.channels.get(temp[message.guild.id]).delete();
-            temp[message.guild.id] = {
-                work : false,
-                channel : "Not Yet"
-            };
-        message.channel.send("** Done.**");
-    };
-}})
-client.on("voiceStateUpdate", (o,n) => {
-    if (!temp[n.guild.id]) return;
-    if (temp[n.guild.id].work == false) return;
-    if (n.voiceChannelID == temp[n.guild.id].channel) {
-        n.guild.createChannel(n.user.username, 'voice').then(c => {
-            n.setVoiceChannel(c);
-            c.overwritePermissions(n.user.id, {
-                CONNECT:true,
-                SPEAK:true,
-                MANAGE_CHANNEL:true,
-                MUTE_MEMBERS:true,
-                DEAFEN_MEMBERS:true,
-                MOVE_MEMBERS:true,
-                VIEW_CHANNEL:true  
-            });
-        })
-    };
-    if (!o.voiceChannel) return;
-    if (o.voiceChannel.name == o.user.username) {
-        o.voiceChannel.delete();
-    };
-});
-
+client.on("message", async function(msg) {
+    if (msg.author.bot) return undefined;
+    if (msg.channel.type !== "text") return undefined;
+    else {
+        var args = msg.content.toLowerCase().split(" ");
+        if (args[0].slice(prefix.length) === "clear") {//The code created by @L#7574
+            if (isNaN(args[1]) && args[1]) return msg.channel.send("Use numbers man ,_,");
+            if (!msg.guild.member(client.user)) return msg.channel.send('Missing manage messages permission!');
+            if (!msg.member.hasPermission("MANAGE_MESSAGES")) return msg.channel.send("You're missing manage messages permission!");
+            else {//The code created by @L#7574
+                if (args[1] || !args[1]) {
+                    await msg.channel.fetchMessages().then(async msgs => {
+                        var word;
+                        if (msgs.size-1 >= 1) word = "messages";
+                        if (msgs.size-1 <= 1) word = "message";
+                        if(msgs.size-1 <= 0) return msg.channel.send(`There are no messages to clear!`);
+                        if (!args[1]) {
+                            if (msgs.size-1 < 100) {
+                                await msg.channel.bulkDelete(msgs.size);
+                                await msg.channel.send(`I've deleted ${msgs.size-=1} ${word}..`);
+                            }
+                            else if (msgs.size-1 >= 100) {
+                                await msg.delete();
+                                await msg.channel.bulkDelete(msgs.size);
+                                await msg.channel.send(`I've deleted ${msgs.size-=1} ${word}..`);
+                            }
+                        }
+                        else if (args[1] && args[1] < 100) {
+                            if (msgs.size-1 < 100 && args[1] < 100 && args[1] > 0) {
+                                await msg.channel.bulkDelete(parseInt(args[1])+1);
+                                await msg.channel.send(`I've deleted ${parseInt(args[1]).toFixed()} ${word}..`);
+                            }
+                            else if (msgs.size-1 >= 100 && args[1] == 100) {
+                                await msg.delete();
+                                await msg.channel.bulkDelete(msgs.size);
+                                await msg.channel.send(`I've deleted ${msgs.size-=1} ${word}`);
+                            }
+                            else {
+                                return msg.channel.send(`Invalid numbers..`);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+});//The code created by @L#7574
 
 client.on("message", message => {
     let roleembed1 = new Discord.RichEmbed()
