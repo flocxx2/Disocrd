@@ -1268,7 +1268,7 @@ client.on("message", message => {
       }
   });
 
-let ar = JSON.parse(fs.readFileSync(`./discord.json`, `utf8`))
+let ar = JSON.parse(fs.readFileSync(`./discord1.json`, `utf8`))
 client.on('guildMemberAdd', member => {
 if(!ar[member.guild.id]) ar[member.guild.id] = {
 onoff: 'Off',
@@ -1312,7 +1312,7 @@ Role : __${ar[message.guild.id].role}__`)
 .setColor(`BLUE`)
 message.channel.send({embed})
 }
-fs.writeFile("./discord.json", JSON.stringify(ar), (err) => {
+fs.writeFile("./discord1.json", JSON.stringify(ar), (err) => {
 if (err) console.error(err)
 });
 })
