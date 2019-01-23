@@ -1184,12 +1184,12 @@ client.on("message", async function(msg) {
                         if (!args[1]) {
                             if (msgs.size-1 < 100) {
                                 await msg.channel.bulkDelete(msgs.size);
-                                await msg.channel.send(`I've deleted ${msgs.size-=1} ${word}..`);
+                                await msg.channel.send(`**Done Delete Messages :white_check_mark: | I've deleted ${msgs.size-=1} ${word}**`);
                             }
                             else if (msgs.size-1 >= 100) {
                                 await msg.delete();
                                 await msg.channel.bulkDelete(msgs.size);
-                                await msg.channel.send(`I've deleted ${msgs.size-=1} ${word}..`);
+                                await msg.channel.send(`**Done Delete Messages :white_check_mark: | I've deleted ${msgs.size-=1} ${word}**`);
                             }
                         }
                         else if (args[1] && args[1] < 100) {
@@ -1200,7 +1200,7 @@ client.on("message", async function(msg) {
                             else if (msgs.size-1 >= 100 && args[1] == 100) {
                                 await msg.delete();
                                 await msg.channel.bulkDelete(msgs.size);
-                                await msg.channel.send(`I've deleted ${msgs.size-=1} ${word}`);
+                                await msg.channel.send(`**Done Delete Messages :white_check_mark: | I've deleted ${msgs.size-=1} ${word}**`);  
                             }
                             else {
                                 return msg.channel.send(`Invalid numbers..`);
