@@ -1117,6 +1117,7 @@ client.on("message", message => {
 .fm ( لعرض حالت الاعضاء )
 .ping ( لعرض سرعه النت تبعك )
 .avatar ( لعرض صوره حسابك )
+.profile ( لازهار البروفايل حقك )
 
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
@@ -1135,6 +1136,7 @@ client.on("message", message => {
 .mc ( لقفل روم كتابه )
 .umc ( لفتح روم كتابه )
 .autorole ( لتفعيل الاوتو رول )
+.role ( لاعطاء رتبه )
 
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
@@ -1266,7 +1268,7 @@ client.on("message", message => {
       }
   });
 
-let ar = JSON.parse(fs.readFileSync(`./SkyBot-Premium.json`, `utf8`))
+let ar = JSON.parse(fs.readFileSync(`./discord.json`, `utf8`))
 client.on('guildMemberAdd', member => {
 if(!ar[member.guild.id]) ar[member.guild.id] = {
 onoff: 'Off',
@@ -1310,7 +1312,7 @@ Role : __${ar[message.guild.id].role}__`)
 .setColor(`BLUE`)
 message.channel.send({embed})
 }
-fs.writeFile("./SkyBot-Premium.json", JSON.stringify(ar), (err) => {
+fs.writeFile("./discord.json", JSON.stringify(ar), (err) => {
 if (err) console.error(err)
 });
 })
