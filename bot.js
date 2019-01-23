@@ -71,6 +71,7 @@ client.on('ready', () => {
       :green_heart: online:   ${message.guild.members.filter(m=>m.presence.status == 'online').size}
       :heart:  dnd:       ${message.guild.members.filter(m=>m.presence.status == 'dnd').size}
       :yellow_heart:  idle:     ${message.guild.members.filter(m=>m.presence.status == 'idle').size}
+      :black_circle:  offline:     ${message.guild.members.filter(m=>m.presence.status == 'offline').size}
       :diamond_shape_with_a_dot_inside:   membersCount:  ${message.guild.memberCount - message.guild.members.filter(m=>m.user.bot).size}
       :bulb: bots: ${message.guild.members.filter(m=>m.user.bot).size} **`)
                message.channel.send({embed});
