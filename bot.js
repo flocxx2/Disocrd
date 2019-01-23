@@ -1134,6 +1134,7 @@ client.on("message", message => {
 .bbc ( لارسال بردكاست بدون منشن )
 .mc ( لقفل روم كتابه )
 .umc ( لفتح روم كتابه )
+.autorole ( لتفعيل الاوتو رول )
 
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
@@ -1157,4 +1158,350 @@ message.channel.send(`MessageTaken: \`${Date.now() - message.createdTimestamp}\`
 message.channel.send(`This avatar For ${user} link : ${user.avatarURL}`);
 }
 });
+
+var temp = {
+ 
+}
+ 
+client.on("message",(message) => {
+    if (message.channel.type !== "text") return;
+    if (!message.content.startsWith(prefix)) return;
+        if(message.content.startsWith(prefix + "temp on")) {
+            if (!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("** You Don't Have Permission `Manage channels` To Do This Command");
+            temp[message.guild.id] = {
+                work : true,
+                channel : "Not Yet"
+            };
+            message.guild.createChannel("اضغط لصنع روم مؤقت", 'voice').then(c => {
+                c.setPosition(1);
+                temp[message.guild.id].channel = c.id
+                message.channel.send("** Done.**");
+            });
+        if(message.content.startsWith(prefix + "temp off")) {
+            if (!message.member.hasPermission("MANAGE_CHANNELS")) return message.reply("** You Don't Have Permission `Manage channels` To Do This Command");
+        message.guild.channels.get(temp[message.guild.id]).delete();
+            temp[message.guild.id] = {
+                work : false,
+                channel : "Not Yet"
+            };
+        message.channel.send("** Done.**");
+    };
+}})
+client.on("voiceStateUpdate", (o,n) => {
+    if (!temp[n.guild.id]) return;
+    if (temp[n.guild.id].work == false) return;
+    if (n.voiceChannelID == temp[n.guild.id].channel) {
+        n.guild.createChannel(n.user.username, 'voice').then(c => {
+            n.setVoiceChannel(c);
+            c.overwritePermissions(n.user.id, {
+                CONNECT:true,
+                SPEAK:true,
+                MANAGE_CHANNEL:true,
+                MUTE_MEMBERS:true,
+                DEAFEN_MEMBERS:true,
+                MOVE_MEMBERS:true,
+                VIEW_CHANNEL:true  
+            });
+        })
+    };
+    if (!o.voiceChannel) return;
+    if (o.voiceChannel.name == o.user.username) {
+        o.voiceChannel.delete();
+    };
+});
+
+
+client.on("message", message => {
+    let roleembed1 = new Discord.RichEmbed()
+    .setDescription(`
+    أمثله على الأوامر :
+    $role @DaRKNighT rolename : لسحب رتبة لعضو معين
+    $role all rolename : لسحب رتبة للجميع
+    $role humans rolename : لسحب رتبة للاشخاص فقط
+    $role bots rolename : لسحب رتبة لجميع البوتات`)
+    .setFooter('Requested by '+message.author.username, message.author.avatarURL)
+      var args = message.content.split(' ').slice(1);
+      var msg = message.content.toLowerCase();
+      if( !message.guild ) return;
+      if( !msg.startsWith( prefix + 'role' ) ) return;
+      if(!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send(' **__ليس لديك صلاحيات__**');
+      if( msg.toLowerCase().startsWith( prefix + 'role' ) ){
+          if( !args[0] ) return message.channel.sendEmbed(roleembed1)
+          if( !args[1] ) return message.channel.sendEmbed(roleembed1)
+          var role = msg.split(' ').slice(2).join(" ").toLowerCase();
+          var role1 = message.guild.roles.filter( r=>r.name.toLowerCase().indexOf(role)>-1 ).first();
+          if( !role1 ) return message.reply( '**:x: يرجى وضع الرتبة المراد سحبها من الشخص**' );if( message.mentions.members.first() ){
+              message.mentions.members.first().removeRole( role1 );
+              return message.reply('**:white_check_mark: [ '+role1.name+' ] رتبة [ '+args[0]+' ] تم سحب من **');
+          }
+          if( args[0].toLowerCase() == "all" ){
+              message.guild.members.forEach(m=>m.removeRole( role1 ))
+              return  message.reply('**:white_check_mark: [ '+role1.name+' ] تم سحب من الكل رتبة**');
+          } else if( args[0].toLowerCase() == "bots" ){
+              message.guild.members.filter(m=>m.user.bot).forEach(m=>m.removeRole(role1))
+              return  message.reply('**:white_check_mark: [ '+role1.name+' ] تم سحب من البوتات رتبة**');
+          } else if( args[0].toLowerCase() == "humans" ){
+              message.guild.members.filter(m=>!m.user.bot).forEach(m=>m.removeRole(role1))
+              return  message.reply('**:white_check_mark: [ '+role1.name+' ] تم سحب من البشريين رتبة**');
+          }  
+      } else {
+          if( !args[0] ) return message.reply( '**:x: يرجى وضع الشخص المراد اعطائها الرتبة**' );
+          if( !args[1] ) return message.reply( '**:x: يرجى وضع الرتبة المراد اعطائها للشخص**' );
+          var role = msg.split(' ').slice(2).join(" ").toLowerCase();
+          var role1 = message.guild.roles.filter( r=>r.name.toLowerCase().indexOf(role)>-1 ).first();
+          if( !role1 ) return message.reply( '**:x: يرجى وضع الرتبة المراد اعطائها للشخص**' );if( message.mentions.members.first() ){
+              message.mentions.members.first().addRole( role1 );
+              return message.reply('**:white_check_mark: [ '+role1.name+' ] رتبة [ '+args[0]+' ] تم اعطاء **');
+          }
+          if( args[0].toLowerCase() == "all" ){
+              message.guild.members.forEach(m=>m.addRole( role1 ))
+              return  message.reply('**:white_check_mark: [ '+role1.name+' ] تم اعطاء الكل رتبة**');
+          } else if( args[0].toLowerCase() == "bots" ){
+              message.guild.members.filter(m=>m.user.bot).forEach(m=>m.addRole(role1))
+              return  message.reply('**:white_check_mark: [ '+role1.name+' ] تم اعطاء البوتات رتبة**');
+          } else if( args[0].toLowerCase() == "humans" ){
+              message.guild.members.filter(m=>!m.user.bot).forEach(m=>m.addRole(role1))
+              return  message.reply('**:white_check_mark: [ '+role1.name+' ] تم اعطاء البشريين رتبة**');
+          }
+      }
+  });
+
+let ar = JSON.parse(fs.readFileSync(`./SkyBot-Premium.json`, `utf8`))
+client.on('guildMemberAdd', member => {
+if(!ar[member.guild.id]) ar[member.guild.id] = {
+onoff: 'Off',
+role: 'Member'
+}
+if(ar[member.guild.id].onoff === 'Off') return;
+member.addRole(member.guild.roles.find(`name`, ar[member.guild.id].role)).catch(console.error)
+})
+client.on('message', message => {
+if(!message.guild) return
+if(!ar[message.guild.id]) ar[message.guild.id] = {
+onoff: 'Off',
+role: 'Member'
+}
+if(message.content.startsWith(prefix + `autorole`)) {
+let perms = message.member.hasPermission(`MANAGE_ROLES`)
+if(!perms) return message.reply(`You don't have permissions, required permission : Manage Roles.`)
+let args = message.content.split(" ").slice(1)
+if(!args.join(" ")) return message.reply(`${prefix}autorle toggle/setrole [ROLE NAME]`)
+let state = args[0]
+if(!state.trim().toLowerCase() == 'toggle' || !state.trim().toLowerCase() == 'setrole') return message.reply(`Please type a right state, ${prefix}modlogs toggle/setrole [ROLE NAME]`)
+if(state.trim().toLowerCase() == 'toggle') {
+if(ar[message.guild.id].onoff === 'Off') return [message.channel.send(`**The Autorole Is __𝐎𝐍__ !**`), ar[message.guild.id].onoff = 'On']
+if(ar[message.guild.id].onoff === 'On') return [message.channel.send(`**The Autorole Is __𝐎𝐅𝐅__ !**`), ar[message.guild.id].onoff = 'Off']
+}
+if(state.trim().toLowerCase() == 'set') {
+let newRole = message.content.split(" ").slice(2).join(" ")
+if(!newRole) return message.reply(`${prefix}autorole set[ROLE NAME]`)
+if(!message.guild.roles.find(`name`,newRole)) return message.reply(`I Cant Find This Role.`)
+ar[message.guild.id].role = newRole
+message.channel.send(`**The AutoRole Has Been Changed to ${newRole}.**`)
+}
+  }
+if(message.content === prefix + 'info') {
+let perms = message.member.hasPermission(`MANAGE_GUILD`)
+if(!perms) return message.reply(`You don't have permissions.`)
+var embed = new Discord.RichEmbed()
+.addField(`Autorole : :sparkles:  `, `
+State : __${ar[message.guild.id].onoff}__
+Role : __${ar[message.guild.id].role}__`)
+.setColor(`BLUE`)
+message.channel.send({embed})
+}
+fs.writeFile("./SkyBot-Premium.json", JSON.stringify(ar), (err) => {
+if (err) console.error(err)
+});
+})
+
+client.on('message', message => {
+    
+if(message.content.split(' ')[0] == '.profile') {
+if(!message.channel.guild) return;
+
+let args = message.content.split(' ').slice(1).join(' ');
+
+       let defineduser = '';
+       if (!args[1]) { 
+           defineduser = message.author;
+       } else { // Run this if they did define someone...
+           let firstMentioned = message.mentions.users.first();
+           defineduser = firstMentioned;
+       }
+
+       const w = ['./id5.png','./id6.png'];
+       var Canvas = require('canvas')
+var jimp = require('jimp')
+
+        const millis = new Date().getTime() - defineduser.createdAt.getTime();
+const now = new Date();
+dateFormat(now, 'dddd, mmmm dS, yyyy');
+const stats2 = ['online', 'Low', 'Medium', 'Insane'];
+const days = millis / 1000 / 60 / 60 / 24;
+         dateFormat(now, 'dddd, mmmm dS, yyyy');
+             let time = `${dateFormat(defineduser.createdAt)}`
+             var heg;
+             if(men) {
+                 heg = men
+             } else {
+                 heg = message.author
+             }
+            var mentionned = message.mentions.members.first();
+              var h;
+             if(mentionned) {
+                 h = mentionned
+             } else {
+                 h = message.member
+             }
+       let Image = Canvas.Image,
+           canvas = new Canvas(300, 300),
+           ctx = canvas.getContext('2d');
+       ctx.patternQuality = 'bilinear';
+       ctx.filter = 'bilinear';
+       ctx.antialias = 'subpixel';
+ 
+       fs.readFile(`${w[Math.floor(Math.random() * w.length)]}`, function (err, Background) {
+           if (err) return console.log(err);
+           let BG = Canvas.Image;
+           let ground = new Image;
+           ground.src = Background;
+           ctx.drawImage(ground, 0, 0, 300, 300);
+
+})
+  var mentionned = message.mentions.users.first();
+
+   var client;
+     if(mentionned){
+         var client = mentionned;
+     } else {
+         var client = message.author;
+         
+     }
+
+var men = message.mentions.users.first();
+           var heg;
+           if(men) {
+               heg = men
+           } else {
+               heg = message.author
+           }
+               let url = defineduser.displayAvatarURL.endsWith(".webp") ? defineduser.displayAvatarURL.slice(20, 20) + ".png" : defineduser.displayAvatarURL;
+               jimp.read(url, (err, ava) => {
+                   if (err) return console.log(err);
+                   ava.getBuffer(jimp.MIME_PNG, (err, buf) => {
+                       if (err) return console.log(err);
+
+                       let Avatar = Canvas.Image;
+                       let ava = new Avatar;
+                       ava.src = buf;
+                       ctx.drawImage(ava, 112 , 40, 75, 75);
+                       
+                       
+                       
+                       
+                       var status;
+   if (defineduser.presence.status === 'online') {
+       status = 'ONLINE';
+ctx.fillStyle = `#2ce032`;
+ctx.beginPath();
+ctx.arc(179, 107, 10, 0, Math.PI*2, true); 
+ctx.closePath();
+ctx.fill();
+ 
+   } else if (defineduser.presence.status === 'dnd') {
+       status = 'DND';
+       ctx.fillStyle = `#ff0000`;
+ctx.beginPath();
+ctx.arc(179, 107, 8, 0, Math.PI*2, true); 
+ctx.closePath();
+ctx.fill();
+   } else if (defineduser.presence.status === 'idle') {
+       status = 'IDLE';
+       ctx.fillStyle = `#f4d32e`;
+ctx.beginPath();
+ctx.arc(179, 107, 10, 0, Math.PI*2, true); 
+ctx.closePath();
+ctx.fill();
+   } else if (defineduser.presence.status === 'offline') {
+       status = 'INVISIABLE';
+       ctx.fillStyle = `#898988`;
+ctx.beginPath();
+ctx.arc(179, 107, 10, 0, Math.PI*2, true); 
+ctx.closePath();
+ctx.fill();
+   }
+                       
+                       
+                                             var time2;
+     if(mentionned){
+         var time2 = `${dateFormat(message.mentions.users.first.joinedAt)}`;
+     } else {
+         var time2 = `${dateFormat(message.member.joinedAt)}`;
+         
+     }  
+                          
+   
+                       ctx.font = 'Bold 15px Arial ';
+                       ctx.fontSize = '15px';
+                       ctx.fillStyle = "#ffffff";
+                       ctx.textAlign = "center";
+                       ctx.fillText(status, 70 , 108 );
+                       
+                        ctx.font = 'Bold 13px Arial';
+                       ctx.fontSize = '13px';
+                       ctx.fillStyle = "#ffffff";
+                       ctx.textAlign = "center";
+                       ctx.fillText(`${message.author.presence.game === null ? "No Status" : message.author.presence.game.name}`, 150.00   , 180  );
+
+                      
+                       ctx.font = 'Bold 20px Arial ';
+                       ctx.fontSize = '15px';
+                       ctx.fillStyle = "#ffffff";
+                       ctx.textAlign = "center";
+                       ctx.fillText(`${defineduser.username}`, 150.50 , 140);
+
+
+                       ctx.font = 'Bold 15px Arial';
+                       ctx.fontSize = '15px';
+                       ctx.fillStyle = "#ffffff";
+                       ctx.textAlign = "center";
+                       ctx.fillText(`#${defineduser.discriminator}`, 227  , 108);
+
+                       var time2;
+     if(mentionned){
+         var time2 = `${dateFormat(message.mentions.users.first.joinedAt)}`;
+     } else {
+         var time2 = `${dateFormat(message.member.joinedAt)}`;
+         
+     }
+
+                       ctx.font = 'Bold 13px Arial ';
+                       ctx.fontSize = '13px';
+                       ctx.fillStyle = "#ffffff";
+                       ctx.textAlign = "center";
+                       ctx.fillText(`${moment(defineduser.createdTimestamp).fromNow()}`, 179 , 226 );
+                       
+                       
+    
+          
+                       ctx.font = 'Bold 13px Arial ';
+                       ctx.fontSize = '13px';
+                       ctx.fillStyle = "#ffffff";
+                       ctx.textAlign = "center";
+                       ctx.fillText(`${moment(h.joinedAt).format('YYYY/M/D HH:mm:ss')}`, 179 , 253);
+                       
+message.channel.sendFile(canvas.toBuffer())
+
+
+       })
+   })
+
+
+
+
+}
+
+})
+
         client.login(process.env.BOT_TOKEN);
